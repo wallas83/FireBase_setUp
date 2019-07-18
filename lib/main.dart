@@ -1,6 +1,8 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_setup/model/board.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 void main() => runApp(MyApp());
 
@@ -63,14 +65,46 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text("Board"),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+      body: Column(
+        children: <Widget>[
+          Flexible(
+            flex: 0,
+            child: Form(
+              key: formkey,
+              child: Flex(
+                direction: Axis.vertical,
+                children: <Widget>[
+                  ListTile(
+                    leading: Icon(Icons.subject),
+                    title: TextFormField(
+                      initialValue: "",
+                      onSaved: (val) =>board.subjet = val,
+                      validator: (val) => val == "" ? val : null,
 
-          ],
-        ),
-      ),
+                    ),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.message),
+                    title: TextFormField(
+                      initialValue: "",
+                      onSaved: (val) => board.body = val,
+                      validator: (val) => val == ""? val : null,
+                    ),
+                  ),
+                  //send or post button
+                  FlatButton(
+                    child: Text("post"),
+                    color: Colors.redAccent,
+                    onPressed: (){
+                      handleSubmit();
+                    },
+                  )
+                ],
+              ),
+            ),
+          )
+        ],
+      )
 
     );
   }
@@ -79,5 +113,16 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       boardMessages.add(Board.fromSnapshot(event.snapshot));
     });
+  }
+
+  void handleSubmit() {
+    final FormState form = formkey.currentState;
+    if(form.validate()){
+      form.save();
+      form.reset();
+      // save form data to database
+
+      databaseReference.push().set(board.toJson());
+    }
   }
 }
