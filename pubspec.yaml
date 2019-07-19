@@ -28,7 +28,7 @@ dependencies:
 #  firebase_database: ^3.0.4
 
   firebase_auth: "^0.5.8"
-  google_sign_in: ^4.0.4
+  google_sign_in: "^3.0.3"
   firebase_core: any
   firebase_database: "^0.4.6"
 
